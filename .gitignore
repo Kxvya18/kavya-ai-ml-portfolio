@@ -1,3 +1,10 @@
 # All files will be pushed to GitHub (per user request).
 # .env, node_modules, __pycache__, build artifacts — everything included.
 frontend/node_modules/.cache/default-development/3.pack
+.env
+.env.*
+*.env
+credentials.json
+*.pem
+*.key
+.credentials
