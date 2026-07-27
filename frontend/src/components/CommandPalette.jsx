@@ -103,7 +103,24 @@ export default function CommandPalette() {
             <Linkedin className="mr-2 h-4 w-4" /> Open LinkedIn
           </CommandItem>
           <CommandItem
-            onSelect={() => run(() => window.open(contact.cvUrl, "_blank"))}
+            onSelect={() =>
+              run(async () => {
+                try {
+                  const res = await fetch(contact.cvUrl);
+                  const blob = await res.blob();
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = "Kavya_Resume.docx";
+                  document.body.appendChild(a);
+                  a.click();
+                  a.remove();
+                  setTimeout(() => URL.revokeObjectURL(url), 1000);
+                } catch (e) {
+                  window.open(contact.cvUrl, "_blank");
+                }
+              })
+            }
           >
             <FileText className="mr-2 h-4 w-4" /> Download CV (.docx)
           </CommandItem>

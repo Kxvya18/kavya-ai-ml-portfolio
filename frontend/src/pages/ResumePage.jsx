@@ -18,10 +18,28 @@ export default function ResumePage() {
   const downloadPdf = () => {
     const a = document.createElement("a");
     a.href = contact.cvPdfUrl;
-    a.download = "Kavya_Kalavala_CV.pdf";
+    a.download = "Kavya_Resume.pdf";
     document.body.appendChild(a);
     a.click();
     a.remove();
+  };
+
+  const downloadDocx = async () => {
+    try {
+      const res = await fetch(contact.cvUrl);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Kavya_Resume.docx";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (e) {
+      // fallback to direct link
+      window.open(contact.cvUrl, "_blank");
+    }
   };
 
   return (
@@ -47,7 +65,11 @@ export default function ResumePage() {
           </button>
           <a
             href={contact.cvUrl}
-            download
+            download="Kavya_Resume.docx"
+            onClick={(e) => {
+              e.preventDefault();
+              downloadDocx();
+            }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#c9a961] text-[#0e0c08] hover:bg-[#e6d9a8] text-xs font-medium transition-colors"
           >
             <Download className="w-3.5 h-3.5" /> Download CV (.docx)
