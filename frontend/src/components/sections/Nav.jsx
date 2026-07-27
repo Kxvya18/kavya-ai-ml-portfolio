@@ -1,22 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { heroData } from "../../mock";
 import { motion } from "framer-motion";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ThemeToggle from "../ThemeToggle";
 import { Command } from "lucide-react";
 
 const navItems = [
-  { label: "Work", href: "#work", section: true },
+  { label: "Work", to: "/work" },
   { label: "Lab", to: "/lab" },
-  { label: "Skills", href: "#skills", section: true },
+  { label: "Skills", to: "/skills" },
   { label: "Resume", to: "/resume" },
-  { label: "Contact", href: "#contact", section: true },
+  { label: "Contact", to: "/contact" },
 ];
 
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const { pathname } = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -24,18 +23,7 @@ export default function Nav() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const handleSection = (e, href) => {
-    e.preventDefault();
-    if (pathname !== "/") {
-      navigate("/");
-      setTimeout(() => document.querySelector(href)?.scrollIntoView({ behavior: "smooth" }), 300);
-    } else {
-      document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   const openPalette = () => {
-    // dispatch cmd+k programmatically
     const event = new KeyboardEvent("keydown", {
       key: "k",
       code: "KeyK",
@@ -52,7 +40,7 @@ export default function Nav() {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.7 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-500 ${
-        scrolled
+        scrolled || pathname !== "/"
           ? "bg-[#0e0c08]/80 backdrop-blur-xl border-b border-[#2a2416]"
           : "bg-transparent"
       }`}
@@ -62,30 +50,24 @@ export default function Nav() {
           {heroData.name}
         </Link>
         <nav className="hidden md:flex items-center gap-8">
-          {navItems.map((n) =>
-            n.section ? (
-              <a
-                key={n.label}
-                href={n.href}
-                onClick={(e) => handleSection(e, n.href)}
-                className="text-[#a89b7a] hover:text-[#e6d9a8] text-sm tracking-wide transition-colors relative group"
-              >
-                {n.label}
-                <span className="absolute left-0 -bottom-1 w-0 h-px bg-[#c9a961] transition-all duration-300 group-hover:w-full" />
-              </a>
-            ) : (
-              <Link
-                key={n.label}
-                to={n.to}
-                className={`text-sm tracking-wide transition-colors relative group ${
-                  pathname === n.to ? "text-[#e6d9a8]" : "text-[#a89b7a] hover:text-[#e6d9a8]"
+          {navItems.map((n) => (
+            <Link
+              key={n.label}
+              to={n.to}
+              className={`text-sm tracking-wide transition-colors relative group ${
+                pathname === n.to
+                  ? "text-[#e6d9a8]"
+                  : "text-[#a89b7a] hover:text-[#e6d9a8]"
+              }`}
+            >
+              {n.label}
+              <span
+                className={`absolute left-0 -bottom-1 h-px bg-[#c9a961] transition-all duration-300 ${
+                  pathname === n.to ? "w-full" : "w-0 group-hover:w-full"
                 }`}
-              >
-                {n.label}
-                <span className="absolute left-0 -bottom-1 w-0 h-px bg-[#c9a961] transition-all duration-300 group-hover:w-full" />
-              </Link>
-            )
-          )}
+              />
+            </Link>
+          ))}
         </nav>
         <div className="flex items-center gap-2">
           <button

@@ -5,7 +5,7 @@ import TorusBackground from "../three/TorusBackground";
 
 export default function Profile() {
   return (
-    <section id="lab" className="relative bg-[#0e0c08] py-32 overflow-hidden">
+    <section id="lab" className="relative bg-[#0e0c08] py-28 overflow-hidden">
       <div className="absolute right-0 top-1/2 -translate-y-1/2 w-[600px] h-[600px] hidden lg:block">
         <TorusBackground />
       </div>

@@ -1,14 +1,25 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { projectIndex } from "../../mock";
+import TerminalHeader from "../TerminalHeader";
 
-export default function ProjectIndex() {
+export default function ProjectIndex({ hideHeader = false }) {
   return (
-    <section className="relative bg-[#0e0c08] py-32 border-t border-[#2a2416]">
+    <section className="relative bg-[#0e0c08] py-20 border-t border-[#2a2416]">
       <div className="max-w-[1400px] mx-auto px-8">
-        <div className="mb-14">
+        {!hideHeader && (
+          <div className="max-w-2xl mb-10">
+            <TerminalHeader
+              file="index.sh"
+              cwd="~/portfolio/projects"
+              command="find . -name '*.md' | wc -l"
+              output={[`${projectIndex.length} additional experiments found`]}
+            />
+          </div>
+        )}
+        <div className="mb-10">
           <p className="text-[#8a7c5c] text-xs tracking-[0.3em] uppercase mb-4">Index</p>
-          <h2 className="font-serif text-[#f5efe0] text-4xl md:text-5xl lg:text-6xl leading-[1.05]">
+          <h2 className="font-serif text-[#f5efe0] text-3xl md:text-4xl lg:text-5xl leading-[1.05]">
             More technical work
           </h2>
         </div>

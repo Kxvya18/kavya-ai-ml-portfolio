@@ -1,4 +1,4 @@
-// Mock data for Kavya Kalavala's 3D interactive portfolio
+// Mock data - Kavya Kalavala's AI Engineer / ML / Graph Intelligence portfolio
 
 export const heroData = {
   name: "Kavya Kalavala",
@@ -8,13 +8,6 @@ export const heroData = {
     "Computer Science Data Science undergraduate focused on AI engineering, machine learning, deep learning, LLM systems, mathematical learning, graph-based inference, topology, optimization, and reproducible research software.",
   labels: ["AI engineering", "LLM systems", "Graphs + topology", "Model evaluation"],
 };
-
-export const navItems = [
-  { label: "Work", href: "#work" },
-  { label: "Lab", href: "#lab" },
-  { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
-];
 
 export const researchStrip = [
   "LLM Evaluation",
@@ -281,10 +274,51 @@ export const skills = [
   },
 ];
 
+// Education & certifications (from provided CV — kept for the /resume page)
+export const education = [
+  {
+    school: "Manipal Institute of Technology, Bengaluru",
+    degree: "B.Tech in Computer Science (Data Science)",
+    period: "2023 – 2027",
+    score: "CGPA 9.08 / 10.00 (up to 6th semester)",
+  },
+  {
+    school: "Deeksha Centre for Learning, Bengaluru",
+    degree: "Pre-University, Science",
+    period: "2021 – 2023",
+    score: "Score 96%",
+  },
+  {
+    school: "Appollo National Public School",
+    degree: "Secondary Education",
+    period: "2017 – 2021",
+    score: "Score 96%",
+  },
+];
+
+export const certifications = [
+  "IBM Enterprise Grade AI and Cloud Solution",
+  "Cisco Cybersecurity Essentials and Packet Tracer",
+  "Infosys Springboard – Introduction to AI, Deep Learning, Computer Vision",
+  "Coursera Deep Learning Specialization",
+  "Coursera TensorFlow ANN",
+  "Coursera IBM Machine Learning",
+  "Coursera Python Developer",
+  "Coursera GUI Programming in Python",
+  "Coursera HTML / CSS / JavaScript",
+  "Udemy Feature Engineering in Machine Learning",
+];
+
 export const contact = {
   heading: "Let's connect and build serious AI systems.",
   location: "Bengaluru, India",
   email: "kxvya1820@gmail.com",
-  github: "https://github.com/",
-  linkedin: "https://linkedin.com/",
+  phone: "+91-9535832089",
+  github: "https://github.com/Kxvya18",
+  githubLabel: "github.com/Kxvya18",
+  linkedin: "https://linkedin.com/in/kavya-kalavala-6008b5286",
+  linkedinLabel: "linkedin.com/in/kavya-kalavala-6008b5286",
+  // Original CV file (kept as-is for direct download)
+  cvUrl:
+    "https://customer-assets-agu9un31.emergentagent.net/job_visual-portfolio-421/artifacts/fqddfb95_Kavya_Kalavala_BlackRock_Aladdin_Data_Resume.docx",
 };

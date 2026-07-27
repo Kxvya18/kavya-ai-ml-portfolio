@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Command,
   CommandDialog,
   CommandEmpty,
   CommandGroup,
@@ -21,8 +20,9 @@ import {
   Moon,
   Sparkles,
   Puzzle,
+  Briefcase,
 } from "lucide-react";
-import { selectedWork } from "../mock";
+import { selectedWork, contact } from "../mock";
 import { useTheme } from "../context/ThemeContext";
 
 export default function CommandPalette() {
@@ -46,48 +46,35 @@ export default function CommandPalette() {
     setTimeout(fn, 30);
   }, []);
 
-  const scrollTo = (id) => {
-    if (window.location.pathname !== "/") {
-      navigate("/");
-      setTimeout(() => document.querySelector(id)?.scrollIntoView({ behavior: "smooth" }), 300);
-    } else {
-      document.querySelector(id)?.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <CommandInput placeholder="Search sections, projects, actions..." />
+      <CommandInput placeholder="Search pages, projects, actions..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        <CommandGroup heading="Navigate">
+        <CommandGroup heading="Pages">
           <CommandItem onSelect={() => run(() => navigate("/"))}>
             <Home className="mr-2 h-4 w-4" /> Home
+          </CommandItem>
+          <CommandItem onSelect={() => run(() => navigate("/work"))}>
+            <Briefcase className="mr-2 h-4 w-4" /> Work
           </CommandItem>
           <CommandItem onSelect={() => run(() => navigate("/lab"))}>
             <FlaskConical className="mr-2 h-4 w-4" /> Lab
           </CommandItem>
+          <CommandItem onSelect={() => run(() => navigate("/skills"))}>
+            <Sparkles className="mr-2 h-4 w-4" /> Skills
+          </CommandItem>
           <CommandItem onSelect={() => run(() => navigate("/resume"))}>
             <FileText className="mr-2 h-4 w-4" /> Resume
           </CommandItem>
-        </CommandGroup>
-        <CommandSeparator />
-        <CommandGroup heading="Jump to section">
-          <CommandItem onSelect={() => run(() => scrollTo("#top"))}>
-            <Sparkles className="mr-2 h-4 w-4" /> Hero
+          <CommandItem onSelect={() => run(() => navigate("/contact"))}>
+            <Mail className="mr-2 h-4 w-4" /> Contact
           </CommandItem>
-          <CommandItem onSelect={() => run(() => scrollTo("#work"))}>Selected Work</CommandItem>
-          <CommandItem onSelect={() => run(() => scrollTo("#lab"))}>Profile</CommandItem>
-          <CommandItem onSelect={() => run(() => scrollTo("#skills"))}>Skills</CommandItem>
-          <CommandItem onSelect={() => run(() => scrollTo("#contact"))}>Contact</CommandItem>
         </CommandGroup>
         <CommandSeparator />
         <CommandGroup heading="Projects">
           {selectedWork.map((p) => (
-            <CommandItem
-              key={p.id}
-              onSelect={() => run(() => scrollTo("#work"))}
-            >
+            <CommandItem key={p.id} onSelect={() => run(() => navigate("/work"))}>
               <Puzzle className="mr-2 h-4 w-4" /> {p.title}
             </CommandItem>
           ))}
@@ -102,14 +89,23 @@ export default function CommandPalette() {
             )}
             Toggle {theme === "dark" ? "light" : "dark"} theme
           </CommandItem>
-          <CommandItem onSelect={() => run(() => navigator.clipboard.writeText("kxvya1820@gmail.com"))}>
+          <CommandItem
+            onSelect={() =>
+              run(() => navigator.clipboard.writeText(contact.email))
+            }
+          >
             <Mail className="mr-2 h-4 w-4" /> Copy email
           </CommandItem>
-          <CommandItem onSelect={() => run(() => window.open("https://github.com/", "_blank"))}>
+          <CommandItem onSelect={() => run(() => window.open(contact.github, "_blank"))}>
             <Github className="mr-2 h-4 w-4" /> Open GitHub
           </CommandItem>
-          <CommandItem onSelect={() => run(() => window.open("https://linkedin.com/", "_blank"))}>
+          <CommandItem onSelect={() => run(() => window.open(contact.linkedin, "_blank"))}>
             <Linkedin className="mr-2 h-4 w-4" /> Open LinkedIn
+          </CommandItem>
+          <CommandItem
+            onSelect={() => run(() => window.open(contact.cvUrl, "_blank"))}
+          >
+            <FileText className="mr-2 h-4 w-4" /> Download CV (.docx)
           </CommandItem>
         </CommandGroup>
       </CommandList>
