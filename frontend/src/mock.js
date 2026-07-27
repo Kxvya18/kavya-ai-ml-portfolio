@@ -318,9 +318,10 @@ export const contact = {
   githubLabel: "github.com/Kxvya18",
   linkedin: "https://linkedin.com/in/kavya-kalavala-6008b5286",
   linkedinLabel: "linkedin.com/in/kavya-kalavala-6008b5286",
-  // Original CV file (kept as-is for direct download)
+  // External hosted CV (Google Drive)
   cvUrl:
-    "https://customer-assets-agu9un31.emergentagent.net/job_visual-portfolio-421/artifacts/fqddfb95_Kavya_Kalavala_BlackRock_Aladdin_Data_Resume.docx",
-  // PDF version rendered from the .docx (served from /public/assets)
-  cvPdfUrl: "/assets/kavya_kalavala_cv.pdf",
+    "https://docs.google.com/document/d/1_zQFjbNXvTDSV7jBB8wRSFSsuCY3XPNg/export?format=docx",
+  // PDF version (Google Drive direct download)
+  cvPdfUrl:
+    "https://drive.google.com/uc?export=download&id=1IXG3gqPNyBb6YgPwFO26ozi17cVcHxs-",
 };
