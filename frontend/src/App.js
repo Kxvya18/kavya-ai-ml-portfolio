@@ -8,6 +8,7 @@ import SkillsPage from "./pages/SkillsPage";
 import ContactPage from "./pages/ContactPage";
 import LabPage from "./pages/LabPage";
 import ResumePage from "./pages/ResumePage";
+import NotFoundPage from "./pages/NotFoundPage";
 import Cursor from "./components/Cursor";
 import CommandPalette from "./components/CommandPalette";
 import GlobalCornerScene from "./components/three/GlobalCornerScene";
@@ -27,6 +28,7 @@ function App() {
             <Route path="/lab" element={<LabPage />} />
             <Route path="/resume" element={<ResumePage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </BrowserRouter>
       </div>

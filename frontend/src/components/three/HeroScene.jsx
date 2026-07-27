@@ -1,4 +1,4 @@
-import React, { useRef, useMemo } from "react";
+import React, { useRef, useMemo, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Float, Points, PointMaterial, Line } from "@react-three/drei";
 import * as THREE from "three";
@@ -114,6 +114,7 @@ function ParticleField() {
 
 export default function HeroScene() {
   const mouse = useRef({ x: 0, y: 0 });
+  const [ready, setReady] = useState(false);
 
   const onMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -123,7 +124,51 @@ export default function HeroScene() {
 
   return (
     <div onMouseMove={onMove} className="absolute inset-0">
-      <Canvas camera={{ position: [0, 0, 6], fov: 45 }} dpr={[1, 2]}>
+      {/* Skeleton shown until the Canvas has painted */}
+      <div
+        className={`absolute inset-0 transition-opacity duration-700 pointer-events-none ${
+          ready ? "opacity-0" : "opacity-100"
+        }`}
+        aria-hidden
+      >
+        {/* soft ambient glow */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full bg-[#c9a961]/8 blur-3xl" />
+        {/* faux graph nodes shimmering */}
+        <svg
+          viewBox="0 0 800 500"
+          className="absolute inset-0 w-full h-full opacity-40"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          {Array.from({ length: 24 }).map((_, i) => {
+            const cx = 400 + Math.cos((i / 24) * Math.PI * 2) * (140 + (i % 3) * 30);
+            const cy = 250 + Math.sin((i / 24) * Math.PI * 2) * (110 + (i % 3) * 20);
+            return (
+              <circle
+                key={i}
+                cx={cx}
+                cy={cy}
+                r="3"
+                fill="#c9a961"
+                opacity={0.4}
+              >
+                <animate
+                  attributeName="opacity"
+                  values="0.2;0.8;0.2"
+                  dur="2.4s"
+                  begin={`${(i % 6) * 0.15}s`}
+                  repeatCount="indefinite"
+                />
+              </circle>
+            );
+          })}
+        </svg>
+      </div>
+
+      <Canvas
+        camera={{ position: [0, 0, 6], fov: 45 }}
+        dpr={[1, 2]}
+        onCreated={() => setTimeout(() => setReady(true), 200)}
+      >
         <ambientLight intensity={0.6} />
         <directionalLight position={[5, 5, 5]} intensity={0.8} />
         <pointLight position={[-5, -5, -5]} intensity={0.4} color="#c9a961" />
