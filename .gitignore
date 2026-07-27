@@ -39,6 +39,12 @@ frontend/.env.*
 backend/.env
 backend/.env.*
 
+# Personal CV / resume files (keep off public repo)
+frontend/public/assets/*.pdf
+frontend/public/assets/*.docx
+scripts/cv.docx
+scripts/*.pdf
+
 *token.json*
 *credentials.json*
 *secret*
