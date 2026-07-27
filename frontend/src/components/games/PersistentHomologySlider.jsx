@@ -1,14 +1,9 @@
 import React, { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { RefreshCw } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { RefreshCw, Lightbulb, Info } from "lucide-react";
 
 /**
- * Persistent Homology Slider
- * - Random 2D point cloud.
- * - Player drags an epsilon slider.
- * - Edges appear between points within distance <= epsilon.
- * - Connected components (H0) are computed with union-find.
- * - Barcode showing when each component died (merged into another).
+ * Persistent Homology Slider (H₀)
  */
 
 function unionFind(n) {
@@ -32,10 +27,7 @@ function genPoints() {
     const cy = 60 + Math.random() * 180;
     const n = 5 + Math.floor(Math.random() * 4);
     for (let i = 0; i < n; i++) {
-      pts.push([
-        cx + (Math.random() - 0.5) * 55,
-        cy + (Math.random() - 0.5) * 55,
-      ]);
+      pts.push([cx + (Math.random() - 0.5) * 55, cy + (Math.random() - 0.5) * 55]);
     }
   }
   return pts;
@@ -68,9 +60,37 @@ function computeBarcode(pts, sortedPairs) {
   return bars;
 }
 
+function HowToPlay() {
+  return (
+    <div className="rounded-xl border border-[#2a2416] bg-[#0e0c08]/60 p-4">
+      <div className="flex items-center gap-2 mb-2 text-[#c9a961] text-[10px] tracking-[0.25em] uppercase">
+        <Lightbulb className="w-3.5 h-3.5" /> How to play
+      </div>
+      <ul className="text-[#a89b7a] text-xs leading-relaxed space-y-1 list-disc pl-5">
+        <li>
+          Every point starts as its own <span className="text-[#e6d9a8]">connected component</span>.
+        </li>
+        <li>
+          Drag <span className="text-[#e6d9a8]">ε</span> to grow a disk of radius ε/2 around each point. When two disks overlap, their components merge.
+        </li>
+        <li>
+          The <span className="text-[#e6d9a8]">H₀ barcode</span> records each component's lifetime — born at ε=0, dying when it merges into another.
+        </li>
+        <li>
+          <span className="text-[#e6d9a8]">Long bars</span> = robust clusters (they survive a wide range of ε). Short bars = noise.
+        </li>
+        <li>
+          Try to find the ε where the number of components drops to <span className="text-[#e6d9a8]">3</span> — that's your cluster count.
+        </li>
+      </ul>
+    </div>
+  );
+}
+
 export default function PersistentHomologySlider() {
   const [seed, setSeed] = useState(0);
   const [eps, setEps] = useState(30);
+  const [showHelp, setShowHelp] = useState(true);
 
   const { pts, pairs, bars, maxD } = useMemo(() => {
     const pts = genPoints();
@@ -81,10 +101,7 @@ export default function PersistentHomologySlider() {
     // eslint-disable-next-line
   }, [seed]);
 
-  // active edges
   const activeEdges = pairs.filter((p) => p.d <= eps);
-
-  // components at current eps via union-find
   const uf = unionFind(pts.length);
   activeEdges.forEach(({ i, j }) => uf.union(i, j));
   const compMap = new Map();
@@ -94,8 +111,16 @@ export default function PersistentHomologySlider() {
   });
   const compCount = compMap.size;
   const colors = ["#c9a961", "#a89b7a", "#e6d9a8", "#8a7c5c", "#d4b877", "#6a5f42"];
-
   const barMax = Math.max(maxD, 1);
+
+  const insight =
+    compCount === 1
+      ? "All points now belong to a single component. ε is large enough to bridge every gap."
+      : compCount === 3
+      ? "You've reached the natural cluster count. The long bars in the barcode confirm this is a robust structure."
+      : compCount > 10
+      ? "ε is small — most points are still isolated. Increase it to see structure form."
+      : `${compCount} components remain. Watch bars die as ε crosses each merging distance.`;
 
   return (
     <div className="rounded-2xl border border-[#2a2416] bg-[#141009] p-6 md:p-8">
@@ -108,6 +133,13 @@ export default function PersistentHomologySlider() {
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowHelp((h) => !h)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs text-[#a89b7a] hover:text-[#e6d9a8] border border-[#2a2416] hover:border-[#c9a961] transition-colors"
+          >
+            <Lightbulb className="w-3.5 h-3.5" />
+            {showHelp ? "Hide help" : "How to play"}
+          </button>
           <div className="px-4 py-2 rounded-lg border border-[#2a2416] text-xs text-[#a89b7a]">
             Components <span className="text-[#e6d9a8] font-mono ml-1">{compCount}</span>
           </div>
@@ -120,18 +152,24 @@ export default function PersistentHomologySlider() {
         </div>
       </div>
 
+      <AnimatePresence>
+        {showHelp && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="mb-6 overflow-hidden"
+          >
+            <HowToPlay />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="grid md:grid-cols-2 gap-6">
         <div className="rounded-xl border border-[#2a2416] bg-[#0e0c08] aspect-square">
           <svg viewBox="0 0 300 300" className="w-full h-full">
             {pts.map((p, i) => (
-              <circle
-                key={`d${i}`}
-                cx={p[0]}
-                cy={p[1]}
-                r={eps / 2}
-                fill="#c9a961"
-                opacity="0.08"
-              />
+              <circle key={`d${i}`} cx={p[0]} cy={p[1]} r={eps / 2} fill="#c9a961" opacity="0.08" />
             ))}
             {activeEdges.map((e, i) => (
               <line
@@ -166,7 +204,7 @@ export default function PersistentHomologySlider() {
             <span className="font-mono text-xs text-[#e6d9a8] w-10">{eps}</span>
           </div>
 
-          <div className="rounded-xl border border-[#2a2416] bg-[#0e0c08] p-4 flex-1 min-h-[300px]">
+          <div className="rounded-xl border border-[#2a2416] bg-[#0e0c08] p-4 flex-1 min-h-[260px]">
             <p className="text-[10px] tracking-[0.25em] uppercase text-[#8a7c5c] mb-3">H₀ Barcode</p>
             <div className="space-y-1.5">
               {bars
@@ -195,9 +233,13 @@ export default function PersistentHomologySlider() {
                   );
                 })}
             </div>
-            <p className="mt-4 text-[10px] text-[#5a5340] leading-relaxed">
-              Each bar is a connected component's lifetime. The gold cursor is the current ε. Long bars = robust structure.
-            </p>
+          </div>
+
+          <div className="mt-4 rounded-xl border border-[#c9a961]/30 bg-[#c9a961]/5 p-4">
+            <div className="flex items-center gap-2 mb-2 text-[10px] tracking-[0.25em] uppercase text-[#c9a961]">
+              <Info className="w-3.5 h-3.5" /> Insight
+            </div>
+            <p className="text-[#b8ac8c] text-xs leading-relaxed">{insight}</p>
           </div>
         </div>
       </div>

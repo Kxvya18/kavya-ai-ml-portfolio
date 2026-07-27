@@ -321,4 +321,6 @@ export const contact = {
   // Original CV file (kept as-is for direct download)
   cvUrl:
     "https://customer-assets-agu9un31.emergentagent.net/job_visual-portfolio-421/artifacts/fqddfb95_Kavya_Kalavala_BlackRock_Aladdin_Data_Resume.docx",
+  // PDF version rendered from the .docx (served from /public/assets)
+  cvPdfUrl: "/assets/kavya_kalavala_cv.pdf",
 };

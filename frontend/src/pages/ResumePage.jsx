@@ -15,7 +15,14 @@ import {
 } from "../mock";
 
 export default function ResumePage() {
-  const printPDF = () => window.print();
+  const downloadPdf = () => {
+    const a = document.createElement("a");
+    a.href = contact.cvPdfUrl;
+    a.download = "Kavya_Kalavala_CV.pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
 
   return (
     <div className="min-h-screen bg-[#0e0c08] text-[#e6e1d6]">
@@ -33,10 +40,10 @@ export default function ResumePage() {
         </Link>
         <div className="flex items-center gap-2">
           <button
-            onClick={printPDF}
+            onClick={downloadPdf}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#3a3220] text-[#e6e1d6] hover:border-[#c9a961] hover:text-[#e6d9a8] text-xs transition-colors"
           >
-            <Printer className="w-3.5 h-3.5" /> Print / Save as PDF
+            <Printer className="w-3.5 h-3.5" /> Save as PDF
           </button>
           <a
             href={contact.cvUrl}

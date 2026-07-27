@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { motion } from "framer-motion";
-import { RefreshCw, Trophy, Zap } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { RefreshCw, Trophy, Zap, Lightbulb, Info } from "lucide-react";
 
 /**
  * Graph Untangle Puzzle
@@ -104,6 +104,40 @@ export default function GraphGame() {
   const onUp = () => setDragging(null);
 
   const solved = crossings === 0 && nodes.length > 0;
+  const [showHelp, setShowHelp] = useState(true);
+
+  // Compute a hint: for the highest-crossing edge, hint which node to move
+  const hint = React.useMemo(() => {
+    if (solved) return null;
+    // find edge involved in most crossings
+    const counts = new Array(edges.length).fill(0);
+    for (let i = 0; i < edges.length; i++) {
+      for (let j = i + 1; j < edges.length; j++) {
+        const [a, b] = edges[i];
+        const [x, y] = edges[j];
+        if (a === x || a === y || b === x || b === y) continue;
+        if (nodes[a] && nodes[b] && nodes[x] && nodes[y]) {
+          const seg = (p1, p2, p3, p4) => {
+            const d = (a, b, c) =>
+              (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x);
+            return (
+              ((d(p3, p4, p1) > 0 && d(p3, p4, p2) < 0) ||
+                (d(p3, p4, p1) < 0 && d(p3, p4, p2) > 0)) &&
+              ((d(p1, p2, p3) > 0 && d(p1, p2, p4) < 0) ||
+                (d(p1, p2, p3) < 0 && d(p1, p2, p4) > 0))
+            );
+          };
+          if (seg(nodes[a], nodes[b], nodes[x], nodes[y])) {
+            counts[i]++;
+            counts[j]++;
+          }
+        }
+      }
+    }
+    const worst = counts.indexOf(Math.max(...counts));
+    if (worst < 0 || counts[worst] === 0) return null;
+    return edges[worst];
+  }, [edges, nodes, solved]);
 
   return (
     <section className="relative bg-[#0e0c08] py-32 border-t border-[#2a2416]">
@@ -118,7 +152,14 @@ export default function GraphGame() {
               Drag the nodes so that no edges cross. A small planarity puzzle inspired by graph-drawing research.
             </p>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center flex-wrap">
+            <button
+              onClick={() => setShowHelp((h) => !h)}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs text-[#a89b7a] hover:text-[#e6d9a8] border border-[#2a2416] hover:border-[#c9a961] transition-colors"
+            >
+              <Lightbulb className="w-3.5 h-3.5" />
+              {showHelp ? "Hide help" : "How to play"}
+            </button>
             <div className="px-5 py-4 rounded-xl border border-[#2a2416] bg-[#141009] min-w-[110px]">
               <div className="text-[10px] tracking-[0.2em] uppercase text-[#8a7c5c] mb-1 flex items-center gap-1"><Zap className="w-3 h-3" />Crossings</div>
               <div className={`font-serif text-2xl ${solved ? "text-[#c9a961]" : "text-[#f5efe0]"}`}>{crossings}</div>
@@ -129,6 +170,36 @@ export default function GraphGame() {
             </div>
           </div>
         </div>
+
+        <AnimatePresence>
+          {showHelp && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              className="mb-6 overflow-hidden"
+            >
+              <div className="rounded-xl border border-[#2a2416] bg-[#141009] p-4">
+                <div className="flex items-center gap-2 mb-2 text-[#c9a961] text-[10px] tracking-[0.25em] uppercase">
+                  <Lightbulb className="w-3.5 h-3.5" /> How to play
+                </div>
+                <ul className="text-[#a89b7a] text-xs leading-relaxed space-y-1 list-disc pl-5">
+                  <li>Drag any gold node to move it. Edges stay attached.</li>
+                  <li>
+                    A graph is <span className="text-[#e6d9a8]">planar</span> if it can be drawn with{" "}
+                    <span className="text-[#e6d9a8]">no crossing edges</span>.
+                  </li>
+                  <li>Your goal: get the crossings counter down to 0.</li>
+                  <li>
+                    Hint: the two edges highlighted in{" "}
+                    <span className="text-[#e6d9a8]">gold</span> below are currently causing the most crossings. Try moving one of their endpoints outward.
+                  </li>
+                  <li>Every level adds one more node — see how far you can go.</li>
+                </ul>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="relative rounded-2xl border border-[#2a2416] bg-[#141009] overflow-hidden">
           <svg
@@ -153,6 +224,8 @@ export default function GraphGame() {
               const p1 = nodes[a];
               const p2 = nodes[b];
               if (!p1 || !p2) return null;
+              const isHint =
+                hint && ((hint[0] === a && hint[1] === b) || (hint[0] === b && hint[1] === a));
               return (
                 <line
                   key={i}
@@ -160,9 +233,9 @@ export default function GraphGame() {
                   y1={p1.y}
                   x2={p2.x}
                   y2={p2.y}
-                  stroke={solved ? "#c9a961" : "#8a7c5c"}
-                  strokeWidth="1.8"
-                  opacity={solved ? 0.9 : 0.7}
+                  stroke={solved ? "#c9a961" : isHint ? "#e6d9a8" : "#8a7c5c"}
+                  strokeWidth={isHint ? "2.4" : "1.8"}
+                  opacity={solved ? 0.9 : isHint ? 0.95 : 0.55}
                 />
               );
             })}
@@ -214,7 +287,13 @@ export default function GraphGame() {
         </div>
 
         <div className="mt-4 flex items-center justify-between text-xs">
-          <div className="text-[#5a5340] tracking-wider uppercase">Tip: no crossing edges = a planar drawing</div>
+          <div className="text-[#5a5340] tracking-wider uppercase">
+            {solved
+              ? "Planar drawing achieved — 0 crossings"
+              : hint
+              ? `Hint: try moving an endpoint of the highlighted edge outward`
+              : "Tip: no crossing edges = a planar drawing"}
+          </div>
           <button
             onClick={() => genLevel(level)}
             className="inline-flex items-center gap-2 text-[#a89b7a] hover:text-[#e6d9a8] transition-colors"
