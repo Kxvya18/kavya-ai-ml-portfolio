@@ -4,7 +4,6 @@
     color: #f5efe0;
 }
 
-/* Custom font stack — serif for headings, clean sans for body */
 .font-serif {
     font-family: "Fraunces", "Playfair Display", "Cormorant Garamond", "Times New Roman", serif;
     font-feature-settings: "ss01", "ss02";
@@ -15,9 +14,9 @@ body {
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     background-color: #0e0c08;
     color: #f5efe0;
+    transition: background-color 0.5s ease, color 0.5s ease;
 }
 
-/* Smooth scroll */
 html {
     scroll-behavior: smooth;
 }
@@ -31,13 +30,11 @@ html {
     }
 }
 
-/* Selection */
 ::selection {
     background-color: #c9a961;
     color: #0e0c08;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -52,13 +49,97 @@ html {
     background: #3a3220;
 }
 
-/* subtle noise overlay */
-.noise::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.06'/></svg>");
-    z-index: 2;
-    mix-blend-mode: overlay;
+/* ==========================================================
+   LIGHT THEME — parchment / cream
+   Applied when <html class="theme-light">
+   Overrides the specific hex arbitrary tailwind classes we use.
+   ========================================================== */
+html.theme-light body {
+    background-color: #f2ead4;
+    color: #1a1408;
+}
+html.theme-light .App {
+    background-color: #f2ead4;
+    color: #1a1408;
+}
+html.theme-light .bg-\[\#0e0c08\] {
+    background-color: #f2ead4 !important;
+}
+html.theme-light .bg-\[\#141009\] {
+    background-color: #e8dcbe !important;
+}
+
+/* semi-transparent nav / overlays */
+html.theme-light .bg-\[\#0e0c08\]\/80 {
+    background-color: rgba(242, 234, 212, 0.85) !important;
+}
+html.theme-light .bg-\[\#0e0c08\]\/40 {
+    background-color: rgba(242, 234, 212, 0.4) !important;
+}
+html.theme-light .bg-\[\#0e0c08\]\/85 {
+    background-color: rgba(242, 234, 212, 0.9) !important;
+}
+
+/* text colors */
+html.theme-light .text-\[\#f5efe0\] {
+    color: #1a1408 !important;
+}
+html.theme-light .text-\[\#e6e1d6\] {
+    color: #2a2416 !important;
+}
+html.theme-light .text-\[\#e6d9a8\] {
+    color: #6a4e1c !important;
+}
+html.theme-light .text-\[\#b8ac8c\] {
+    color: #4a3e28 !important;
+}
+html.theme-light .text-\[\#a89b7a\] {
+    color: #574a30 !important;
+}
+html.theme-light .text-\[\#8a7c5c\] {
+    color: #6a5c40 !important;
+}
+html.theme-light .text-\[\#5a5340\] {
+    color: #8a7c5c !important;
+}
+html.theme-light .text-\[\#c9a961\] {
+    color: #8a6b2a !important;
+}
+
+/* borders */
+html.theme-light .border-\[\#2a2416\] {
+    border-color: #d4c9a8 !important;
+}
+html.theme-light .border-\[\#3a3220\] {
+    border-color: #c0b48a !important;
+}
+html.theme-light .divide-\[\#2a2416\] > * + * {
+    border-color: #d4c9a8 !important;
+}
+
+/* button primary — keep gold pill but adjust foreground */
+html.theme-light .bg-\[\#c9a961\] {
+    background-color: #b58a3a !important;
+    color: #f5efe0 !important;
+}
+html.theme-light .hover\:bg-\[\#e6d9a8\]:hover {
+    background-color: #8a6b2a !important;
+}
+
+/* hero vignette — remove in light mode */
+html.theme-light [class*="bg-gradient-to-b"][class*="#0e0c08"],
+html.theme-light [class*="bg-[radial-gradient"] {
+    opacity: 0;
+}
+
+/* selection */
+html.theme-light ::selection {
+    background-color: #8a6b2a;
+    color: #f5efe0;
+}
+html.theme-light ::-webkit-scrollbar-track {
+    background: #f2ead4;
+}
+html.theme-light ::-webkit-scrollbar-thumb {
+    background: #d4c9a8;
 }

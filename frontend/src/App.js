@@ -1,32 +1,30 @@
 import React from "react";
 import "./App.css";
-import Nav from "./components/sections/Nav";
-import Hero from "./components/sections/Hero";
-import ResearchStrip from "./components/sections/ResearchStrip";
-import Profile from "./components/sections/Profile";
-import SelectedWork from "./components/sections/SelectedWork";
-import ProjectIndex from "./components/sections/ProjectIndex";
-import EvidenceGallery from "./components/sections/EvidenceGallery";
-import GraphGame from "./components/sections/GraphGame";
-import Skills from "./components/sections/Skills";
-import Contact from "./components/sections/Contact";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "./context/ThemeContext";
+import HomePage from "./pages/HomePage";
+import LabPage from "./pages/LabPage";
+import ResumePage from "./pages/ResumePage";
 import Cursor from "./components/Cursor";
+import CommandPalette from "./components/CommandPalette";
+import GlobalCornerScene from "./components/three/GlobalCornerScene";
 
 function App() {
   return (
-    <div className="App bg-[#0e0c08] min-h-screen">
-      <Cursor />
-      <Nav />
-      <Hero />
-      <ResearchStrip />
-      <Profile />
-      <SelectedWork />
-      <ProjectIndex />
-      <EvidenceGallery />
-      <GraphGame />
-      <Skills />
-      <Contact />
-    </div>
+    <ThemeProvider>
+      <div className="App bg-[#0e0c08] min-h-screen">
+        <BrowserRouter>
+          <Cursor />
+          <CommandPalette />
+          <GlobalCornerScene />
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/lab" element={<LabPage />} />
+            <Route path="/resume" element={<ResumePage />} />
+          </Routes>
+        </BrowserRouter>
+      </div>
+    </ThemeProvider>
   );
 }
 
